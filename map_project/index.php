@@ -25,6 +25,9 @@
     <script src="libs/jquery-ui-1.12.1/jquery-ui.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+
+    
 
   </head>
 
@@ -36,16 +39,51 @@
      
     <div id="map" class="map">
         
-
+    <button id="print-map-btn"  class="material-icons">print</button>
+    
+    <div class="modal fade" id="printModal" tabindex="-1" aria-labelledby="printModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="printModalLabel">Print Map</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="format">Page size</label>
+                            <select id="format" class="form-control">
+                                <option value="a0">A0 (slow)</option>
+                                <option value="a1">A1</option>
+                                <option value="a2">A2</option>
+                                <option value="a3">A3</option>
+                                <option value="a4" selected>A4</option>
+                                <option value="a5">A5 (fast)</option>
+                            </select>
+                            <label for="resolution">Resolution</label>
+                            <select id="resolution" class="form-control">
+                                <option value="72">72 dpi (fast)</option>
+                                <option value="150">150 dpi</option>
+                                <option value="300">300 dpi (slow)</option>
+                            </select>
+                        </div>
+                        <button id="ziButton" type="button" class="btn btn-secondary">Select Area</button>
+                        <button id="export-pdf" type="button" class="btn btn-primary">Export PDF</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
         <div id="scale_bar">
             
             
         </div>
 
+       
 
         <button id="trackBtn">
-            <i class="material-icons">location_on</i>
+            <i class="material-icons">location_searching</i>
         </button>
 
        
@@ -60,17 +98,42 @@
             <i class="material-icons">fullscreen</i>
         </button>
 
-        <a href="../printnew/index.html" id="print-map-btn"  >
-            <i class="material-icons">print</i>
-        </a>
-        
-     <a href="../droppin/index.html" id="trackbtn2">
-            <i class="material-icons">map</i>
-        </a>
-        <!-- Add a new button for the layer with a material icon -->
-<!-- <button onclick="addLayer1()" type="button" id="add-layer-btn">-->
-<!--    <i class="material-icons">layers</i>-->
-<!--</button> -->
+        <select id="measuretype" class="form-select" aria-label=".form-select-sm example">
+            <option value="select">Select Measure option</option>
+            <option value="length">Length (LineString)</option>
+            <option value="area">Area (Polygon)</option>
+            <option value="clear">Clear Measurement</option>
+        </select>
+<button id="trackbtn2"  class="material-icons">pin_drop</button>
+        <div>
+
+        <div class="modal fade" id="pinModal" tabindex="-1" aria-labelledby="pinModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pinModalLabel">Pin_drop</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                        <label for="lat">Latitude:</label>
+                        <input type="text" id="lat" class="form-control" placeholder="Enter latitude">
+                        </div>
+                        <label for="lon">Longitude:</label>
+                        <input type="text" id="lon" class="form-control" placeholder="Enter longitude">
+                         </div>
+                         <button id="locate_Pindrop" class="btn btn-success">Drop Pin</button>
+                         <button id="locate_Pinremove" class="btn btn-danger">Remove Pin</button>
+                         </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+   
+</div>
 
 <div class="btn-group1">
     <button type="button"  id="layer-btn"  data-bs-toggle="dropdown" aria-expanded="false">
@@ -89,13 +152,7 @@
         <button onclick="info()" type="button" id="info_btn" class="btn btn-success btn-sm">
   <span class="material-icons">info</span> <!-- Google Font icon for information -->
 </button>
-        <select id="measuretype" class="form-select" aria-label=".form-select-sm example">
-            <option value="select">Select Measure option</option>
-            <option value="length">Length (LineString)</option>
-            <option value="area">Area (Polygon)</option>
-            <option value="clear">Clear Measurement</option>
-        </select>
-
+       
          <div class="icon-container">
         <span class="material-icons icon" onclick="toggleInputs()">add_location</span>
         <div class="icon-content" id="iconContent">
@@ -225,6 +282,9 @@
     <button type="button" id="attQryRun" class="attQryRun" onclick="attributeQuery()">Run</button>
     </div>
     <script src="main.js"></script>
+    <script src="print.js"></script>
+    <script src="droppin.js"></script>
+   
    
 </body>
 

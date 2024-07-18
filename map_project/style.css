@@ -97,6 +97,52 @@ body {
 
 } */
 
+
+
+.ol-dragbox {
+    border: 2px dashed grey;
+    background-color: rgba(200, 200, 200, 0.6);
+  }
+  
+  .ziButtonDiv {
+    position: relative;
+    display: block;
+    margin: 1px auto auto 10px;
+  }
+  
+  .draggable-area {
+    width: 300px;
+    height: 200px;
+    background-color: lightgray;
+    cursor: move;
+  }
+  
+  .print-header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .print-icon {
+    z-index: 500;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    background: white;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  @media print {
+    .print-header {
+        display: block;
+    }
+    #map {
+        height: 80%; /* Adjust according to header height */
+    }
+  }
+  
 #legend {
     z-index: 11;
     padding: 2px 4px;
@@ -231,7 +277,7 @@ body {
     border:none;
     position: absolute;
     z-index: 500;
-    top: 55%; /* Adjust this value to position it below #wms_layers_btn */
+    top: 53%; /* Adjust this value to position it below #wms_layers_btn */
     left: 0.5em; /* Align it with #wms_layers_btn */
     transform: translateY(-50%);
     padding:  1px 3px;
@@ -242,7 +288,7 @@ body {
     border: none;
     padding: 1px 3px;
     position: absolute; /* Use fixed positioning for absolute placement */
-    top: 58%; /* Adjust the top position */
+    top: 56%; /* Adjust the top position */
     left: 0.5em; /* Adjust the right position */
     cursor: pointer;
     z-index: 1000;
@@ -250,24 +296,24 @@ body {
 }
 #print-map-btn {
     border:none;
-    padding: 1px 3px;
+    padding: 6px 3px;
     position: absolute;
     z-index: 600;
-    top: 67%;
-    left: 0.5em; /* Adjust this value based on your layout */
+    top: 63%;
+    left: 0.4em; /* Adjust this value based on your layout */
     transform: translateY(-50%);
     background-color: #5C72B2;
 
 }
 #trackbtn2 {
     border:none;
-    padding: 1px 3px;
+    padding: 4px 3px;
     position: absolute;
     z-index: 600;
-    top: 85%;
-    left: 0.5em; /* Adjust this value based on your layout */
+    top: 80%;
+    left: 0.3em; /* Adjust this value based on your layout */
     transform: translateY(-50%);
-    background-color: #000;
+    background-color: #181111;
 
 }
 #add-layer-btn {
@@ -286,13 +332,13 @@ body {
 
 #wms_layers_btn {
     border:none;
-    padding: 1px 3px;
+    padding: 4px 3px;
     position: absolute;
     z-index: 600;
-    top: 73%;
+    top: 69%;
     left: 0.5em; /* Adjust this value based on your layout */
     transform: translateY(-50%);
-    background-color: gainsboro;
+    background-color: rgb(102, 44, 44);
 }
 
 #trackBtn1 {
@@ -300,7 +346,7 @@ body {
     border:none;
     padding: 1px 3px;
     z-index: 3000;
-    top: 40px;
+    top: 30px;
     left: 9px;
     background-color: gainsboro;
  
@@ -329,11 +375,12 @@ body {
    
         position: absolute;
         z-index: 500;
-        top: 91%;
-        left: 0.2%;
+        padding: 5px 18px;
+        top: 85%;
+        left: 0.3%;
         width: 2%;
         transform: translateY(-50%);
-        /*background-color: rgba(0, 0, 0, 0.5)*/
+        background-color: rgba(14, 177, 226, 0.692)
     }
 
     #layer-btn {
@@ -638,7 +685,7 @@ live search functionality in openlayer
     padding: 1px 3px;
     position: absolute;
     z-index: 600;
-    top: 79%;
+    top: 75%;
     left: 0.5em; /* Adjust this value based on your layout */
     transform: translateY(-50%);
     background-color: #E19585;

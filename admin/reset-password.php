@@ -34,12 +34,12 @@ $_SESSION['status_code01']="Error";
 }
 }
 ?>
-<?php
-$sql="SELECT * FROM master WHERE id='1'";
-$test = mysqli_query($db, $sql);
-$r = mysqli_fetch_array($test);
-$client_status=$r['client_status'];
-?>
+<!-- <?php
+// $sql="SELECT * FROM master WHERE id='1'";
+// $test = mysqli_query($db, $sql);
+// $r = mysqli_fetch_array($test);
+// $client_status=$r['client_status'];
+?> -->
 
 <div class="content-wrapper">
 <section class="content-header">
