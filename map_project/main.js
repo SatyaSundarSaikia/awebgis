@@ -136,44 +136,7 @@ function toggleInputs() {
     }
 }
 
-function dropPin() {
-    var latitude = parseFloat(document.getElementById('latitudeInput').value);
-    var longitude = parseFloat(document.getElementById('longitudeInput').value);
 
-    // Check if latitude and longitude are valid
-    if (isNaN(latitude) || isNaN(longitude)) {
-        alert('Please enter valid latitude and longitude.');
-        return;
-    }
-
-    var coordinates = ol.proj.fromLonLat([longitude, latitude]);
-
-    // Clear previous markers
-    vectorSource.clear();
-
-    // Add new marker
-    var marker = new ol.Feature({
-        geometry: new ol.geom.Point(coordinates)
-    });
-
-    // Style the marker
-    var markerStyle = new ol.style.Style({
-        image: new ol.style.Icon({
-            src: 'https://openlayers.org/en/latest/examples/data/icon.png', // You can use any image URL here
-            anchor: [0.5, 1]
-        })
-    });
-
-    marker.setStyle(markerStyle);
-
-    // Add marker to the vector layer
-    vectorSource.addFeature(marker);
-
-    // Zoom to the marker
-    map.getView().animate({ center: coordinates, zoom: 10 }); // Adjust zoom level as needed
-}
-
-//overlays.getLayers().push(ind_state);
 var popup = new Popup();
 map.addOverlay(popup);
 
@@ -216,6 +179,7 @@ map.addControl(layerSwitcher);
 layerSwitcher.renderPanel();
 
 
+//geocoder---------------------------------------------
 
 var geocoder = new Geocoder('nominatim', {
     provider: 'osm',
@@ -239,7 +203,8 @@ geocoder.on('addresschosen', function(evt) {
 });
 
 
-//legend
+//legend------------------------------------------------
+
 function legend() {
 
     $('#legend').empty();
@@ -280,7 +245,8 @@ function legend() {
 legend();
 
 
-// layer dropdown query
+// layer dropdown query------------------------------------------------
+
 $(document).ready(function() {
     $.ajax({
         type: "GET",
@@ -304,7 +270,8 @@ $(document).ready(function() {
 });
 
 
-// attribute dropdown      
+// attribute dropdown---------------------------------------------------------
+
 $(function() {
     $("#layer").change(function() {
 
@@ -351,7 +318,8 @@ $(function() {
     });
 });
 
-// operator combo
+// operator combo-----------------------------------------------------
+
 $(function() {
     $("#attributes").change(function() {
 
@@ -383,7 +351,8 @@ $(function() {
 
 
 
-// layer dropdown draw query
+// layer dropdown draw query--------------------------------------------------------
+
 $(document).ready(function() {
     $.ajax({
         type: "GET",
@@ -423,7 +392,8 @@ var highlightStyle = new ol.style.Style({
     })
 });
 
-// function for finding row in the table when feature selected on map
+// function for finding row in the table when feature selected on map--------------------------------------
+
 function findRowNumber(cn1, v1) {
 
     var table = document.querySelector('#table');
@@ -441,7 +411,7 @@ function findRowNumber(cn1, v1) {
 
 
 
-// function for loading query
+// function for loading query--------------------------------------------------------------------------------
 
 function query() {
 
@@ -1004,7 +974,8 @@ function getinfo(evt) {
 
 
         document.getElementById('map').s
-//full screen
+
+//full screen--------------------------------------------------------------
 
 function toggleFullScreen() {
     var element = document.documentElement;
@@ -1033,7 +1004,8 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
     });
 });
 
-// clear function
+// clear function-----------------------------------------------------------------
+
 function clear_all() {
     if (vector1) {
         vector1.getSource().clear();
@@ -1220,7 +1192,8 @@ var draw1;
 
 
 
-// measure Tool
+// measure Tool-------------------------------------------------------------------------
+
 function add_draw_Interaction() {
     var value = draw_type.value;
     //alert(value);
@@ -1787,7 +1760,7 @@ function createMeasureTooltip() {
 }
 
 
-//geolocation:
+//geolocation-----------------------------------------------------------------------
 
 const geolocation = new ol.Geolocation({
     // enableHighAccuracy must be set to true to have the heading value.
@@ -1804,11 +1777,19 @@ function el(id) {
 // Get the button element
 const trackBtn = document.getElementById('trackBtn');
 
-// Add click event listener to the button
+// Add click event listener to the button to toggle geolocation tracking
 trackBtn.addEventListener('click', function() {
-    // Toggle geolocation tracking
     const isTracking = geolocation.getTracking();
-    geolocation.setTracking(!isTracking);
+    if (isTracking) {
+        geolocation.setTracking(false);
+        positionFeature.setGeometry(null);
+        accuracyFeature.setGeometry(null);
+        el('info').innerText = 'Geolocation tracking turned off';
+    } else {
+        geolocation.setTracking(true);
+        el('info').innerText = 'Geolocation tracking turned on';
+    }
+    el('info').style.display = 'block';
 });
 
 // Update the HTML page when the position changes.
@@ -1824,7 +1805,7 @@ geolocation.on('change', function () {
 geolocation.on('error', function (error) {
     const info = document.getElementById('info');
     info.innerHTML = error.message;
-    info.style.display = '';
+    info.style.display = 'block';
 });
 
 const accuracyFeature = new ol.Feature();
@@ -1860,3 +1841,241 @@ new ol.layer.Vector({
     }),
 });
 
+
+
+//print map-------------------------------------------------------------------------------------------------
+
+const zoomininteraction = new ol.interaction.DragBox();
+zoomininteraction.on('boxend', function () {
+    const zoominExtent = zoomininteraction.getGeometry().getExtent();
+    map.getView().fit(zoominExtent);
+});
+
+const mapElement = document.getElementById("map");
+
+function resetCursor() {
+    mapElement.style.cursor = "auto";
+    map.removeInteraction(zoomininteraction);
+}
+
+map.on('moveend', resetCursor);
+
+const ziButton = document.getElementById('ziButton');
+ziButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    mapElement.style.cursor = "zoom-in";
+    map.addInteraction(zoomininteraction);
+});
+
+const dims = {
+    a0: [1189, 841],
+    a1: [841, 594],
+    a2: [594, 420],
+    a3: [420, 297],
+    a4: [297, 210],
+    a5: [210, 148],
+};
+
+
+
+document.getElementById('print-map-btn').addEventListener('click', function () {
+    var printModal = new bootstrap.Modal(document.getElementById('printModal'), {});
+    printModal.show();
+});
+
+document.getElementById('ziButton').addEventListener('click', function () {
+    // Implement the logic for selecting the area
+});
+
+document.getElementById('export-pdf').addEventListener('click', function () {
+    var format = document.getElementById('format').value;
+    var resolution = document.getElementById('resolution').value;
+    
+    var exportButton = document.getElementById('export-pdf');
+    exportButton.disabled = true;
+    document.body.style.cursor = 'progress';
+
+    const dim = {
+        a0: [1189, 841],
+        a1: [841, 594],
+        a2: [594, 420],
+        a3: [420, 297],
+        a4: [297, 210],
+        a5: [210, 148],
+    };
+
+    const mapCanvasWidth = Math.round((dim[format][0] * 0.7 * resolution) / 25.4);
+    const mapCanvasHeight = Math.round((dim[format][1] * resolution) / 25.4);
+    const headerHeight = 70;
+    const legendWidth = dim[format][0] * 0.3 * resolution / 25.4;
+
+    const size = map.getSize();
+    const viewResolution = map.getView().getResolution();
+
+    map.once('rendercomplete', function () {
+        const mapCanvas = document.createElement('canvas');
+        mapCanvas.width = mapCanvasWidth;
+        mapCanvas.height = mapCanvasHeight;
+        const mapContext = mapCanvas.getContext('2d');
+
+        Array.prototype.forEach.call(document.querySelectorAll('.ol-layer canvas'), function (canvas) {
+            if (canvas.width > 0) {
+                const opacity = canvas.parentNode.style.opacity;
+                mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+                const transform = canvas.style.transform;
+                const matrix = transform.match(/^matrix\(([^\(]*)\)$/)[1].split(',').map(Number);
+                CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
+                mapContext.drawImage(canvas, 0, 0);
+            }
+        });
+
+        mapContext.globalAlpha = 1;
+        mapContext.setTransform(1, 0, 0, 1, 0, 0);
+
+        const headerCanvas = document.createElement('canvas');
+        headerCanvas.width = dim[format][0] * resolution / 25.4;
+        headerCanvas.height = headerHeight;
+        const headerContext = headerCanvas.getContext('2d');
+        headerContext.fillStyle = "white";
+        headerContext.fillRect(0, 0, headerCanvas.width, headerCanvas.height);
+
+        const logoImg = new Image();
+        logoImg.src = './img/assac.png'; 
+        logoImg.onload = function () {
+            const logoWidth = 40;
+            const logoHeight = 40;
+            const logoX = 10;
+            const logoY = (headerHeight - logoHeight) / 2;
+            headerContext.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+
+
+            headerContext.font = "20px Arial";
+            headerContext.fillStyle = "black";
+            const text = "Assam State Space Application Centre";
+            const textX = logoX + logoWidth + 10;
+            const textY = headerHeight / 2 + 7;
+            headerContext.fillText(text, textX, textY);
+
+            const fullCanvas = document.createElement('canvas');
+            fullCanvas.width = dim[format][0] * resolution / 25.4;
+            fullCanvas.height = mapCanvasHeight + headerHeight;
+            const fullContext = fullCanvas.getContext('2d');
+            fullContext.fillStyle = "white";
+            fullContext.fillRect(0, 0, fullCanvas.width, fullCanvas.height);
+
+            fullContext.lineWidth = 4;
+            fullContext.strokeRect(0, 0, fullCanvas.width, fullCanvas.height);
+
+            fullContext.drawImage(headerCanvas, 0, 0);
+            fullContext.drawImage(mapCanvas, 0, headerHeight, mapCanvasWidth, mapCanvasHeight);
+
+            const legendCanvas = document.createElement('canvas');
+            legendCanvas.width = legendWidth;
+            legendCanvas.height = mapCanvasHeight;
+            const legendContext = legendCanvas.getContext('2d');
+
+            legendContext.fillStyle = "white";
+            legendContext.fillRect(0, 0, legendCanvas.width, legendCanvas.height);
+            legendContext.strokeStyle = "black";
+            legendContext.strokeRect(0, 0, legendCanvas.width, legendCanvas.height);
+            legendContext.font = "16px Arial";
+            legendContext.fillStyle = "black";
+            legendContext.fillText("Legend", 10, 30);
+
+            fullContext.drawImage(legendCanvas, mapCanvasWidth, headerHeight);
+
+            const pdf = new jspdf.jsPDF('landscape', undefined, format);
+            pdf.addImage(fullCanvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, dim[format][0], dim[format][1]);
+            pdf.save('map.pdf');
+
+            map.setSize(size);
+            map.getView().setResolution(viewResolution);
+            exportButton.disabled = false;
+            document.body.style.cursor = 'auto';
+
+            var printModal = bootstrap.Modal.getInstance(document.getElementById('printModal'));
+            printModal.hide();
+        };
+
+        logoImg.onerror = function () {
+            console.error('Error loading logo image:', logoImg.src);
+            map.setSize(size);
+            map.getView().setResolution(viewResolution);
+            exportButton.disabled = false;
+            document.body.style.cursor = 'auto';
+
+
+            var printModal = bootstrap.Modal.getInstance(document.getElementById('printModal'));
+            printModal.hide();
+        };
+
+        logoImg.onerror = function () {
+            console.error('Error loading logo image:', logoImg.src);
+            map.setSize(size);
+            map.getView().setResolution(viewResolution);
+            exportButton.disabled = false;
+            document.body.style.cursor = 'auto';
+
+            var printModal = bootstrap.Modal.getInstance(document.getElementById('printModal'));
+            printModal.hide();
+        };
+    });
+
+    const printSize = [mapCanvasWidth, mapCanvasHeight];
+    map.setSize(printSize);
+    const scaling = Math.min(mapCanvasWidth / size[0], mapCanvasHeight / size[1]);
+    map.getView().setResolution(viewResolution / scaling);
+});
+
+
+
+
+//drop_pin------------------------------------------------------------------------------------------------------------------
+
+// Define the pin source and layer
+const pinSource = new ol.source.Vector();
+
+// Add event listener to show modal
+document.getElementById('trackbtn2').addEventListener('click', function () {
+  var printModal = new bootstrap.Modal(document.getElementById('pinModal'), {});
+  printModal.show();
+});
+
+// Add event listener to drop pin
+document.getElementById('locate_Pindrop').addEventListener('click', function () {
+  let lat = parseFloat(document.getElementById("lat").value);
+  let lon = parseFloat(document.getElementById("lon").value);
+
+  // Validate latitude and longitude
+  if (isNaN(lon) || isNaN(lat) || lon < -180 || lon > 180 || lat < -90 || lat > 90) {
+    alert("Please enter valid longitude (-180 to 180) and latitude (-90 to 90) values.");
+    return;
+  }
+
+  // Center the map view to the specified coordinates
+  map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+  map.getView().setZoom(15);
+
+  // Create a pin feature
+  let pinFeature = new ol.Feature({
+    geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+  });
+
+  // Define pin style
+  let pinStyle = new ol.style.Style({
+    image: new ol.style.Icon({
+      anchor: [0.5, 1],
+      src: './image/pinn.png' // Ensure this path is correct
+    })
+  });
+
+  pinFeature.setStyle(pinStyle);
+
+  // Add the pin feature to the pin source
+  pinSource.addFeature(pinFeature);
+});
+
+// Add event listener to remove pin
+document.getElementById('locate_Pinremove').addEventListener('click', function () {
+  pinSource.clear(); // Clear all features from the pin source
+});

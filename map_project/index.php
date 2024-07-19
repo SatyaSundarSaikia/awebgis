@@ -38,7 +38,6 @@
     </div>
      
     <div id="map" class="map">
-        
     <button id="print-map-btn"  class="material-icons">print</button>
     
     <div class="modal fade" id="printModal" tabindex="-1" aria-labelledby="printModalLabel" aria-hidden="true">
@@ -85,6 +84,7 @@
         <button id="trackBtn">
             <i class="material-icons">location_searching</i>
         </button>
+        
 
        
      
@@ -282,8 +282,8 @@
     <button type="button" id="attQryRun" class="attQryRun" onclick="attributeQuery()">Run</button>
     </div>
     <script src="main.js"></script>
-    <script src="print.js"></script>
-    <script src="droppin.js"></script>
+    <!-- <script src="print.js"></script> -->
+    <!-- <script src="droppin.js"></script> -->
    
    
 </body>
