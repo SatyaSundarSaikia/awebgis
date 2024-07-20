@@ -113,13 +113,22 @@ overlays = new ol.layer.Group({
             source: vectorSource
         });
 
-map = new ol.Map({
-    target: 'map',
-    view: view,
+// map = new ol.Map({
+//     target: 'map',
+//     view: view,
    
-    // overlays: [overlay]
-});
+//     // overlays: [overlay]
+// });
 
+ map = new ol.Map({
+    target: 'map', // Ensure this matches the ID of your map container
+    
+   view: new ol.View({
+      projection: 'EPSG:4326',
+    center: [91.74, 26.18],
+    zoom: 10     
+   })
+});
 
 map.addLayer(base_maps);
 map.addLayer(layer_map);
@@ -754,6 +763,7 @@ function wms_layers() {
         });
         $("#wms_layers_window").draggable();
         $("#wms_layers_window").modal('show');
+        
 
     });
 
@@ -2031,51 +2041,62 @@ document.getElementById('export-pdf').addEventListener('click', function () {
 
 
 //drop_pin------------------------------------------------------------------------------------------------------------------
-
-// Define the pin source and layer
-const pinSource = new ol.source.Vector();
-
-// Add event listener to show modal
 document.getElementById('trackbtn2').addEventListener('click', function () {
-  var printModal = new bootstrap.Modal(document.getElementById('pinModal'), {});
-  printModal.show();
+    var pinModal = new bootstrap.Modal(document.getElementById('pinModal'), {});
+    pinModal.show();
 });
 
-// Add event listener to drop pin
-document.getElementById('locate_Pindrop').addEventListener('click', function () {
-  let lat = parseFloat(document.getElementById("lat").value);
-  let lon = parseFloat(document.getElementById("lon").value);
-
-  // Validate latitude and longitude
-  if (isNaN(lon) || isNaN(lat) || lon < -180 || lon > 180 || lat < -90 || lat > 90) {
-    alert("Please enter valid longitude (-180 to 180) and latitude (-90 to 90) values.");
-    return;
-  }
-
-  // Center the map view to the specified coordinates
-  map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-  map.getView().setZoom(15);
-
-  // Create a pin feature
-  let pinFeature = new ol.Feature({
-    geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
-  });
-
-  // Define pin style
-  let pinStyle = new ol.style.Style({
-    image: new ol.style.Icon({
-      anchor: [0.5, 1],
-      src: './image/pinn.png' // Ensure this path is correct
-    })
-  });
-
-  pinFeature.setStyle(pinStyle);
-
-  // Add the pin feature to the pin source
-  pinSource.addFeature(pinFeature);
+const raster = new ol.layer.Tile({
+    source: new ol.source.OSM(),
 });
 
-// Add event listener to remove pin
-document.getElementById('locate_Pinremove').addEventListener('click', function () {
-  pinSource.clear(); // Clear all features from the pin source
+
+// Add an empty vector source to hold pins
+const pinSource = new ol.source.Vector();
+const pinLayer = new ol.layer.Vector({
+    source: pinSource
+});
+map.addLayer(pinLayer);
+
+document.getElementById('locate_Pindrop').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent default form submission
+    
+    // Get longitude and latitude values from input fields
+    let lat = parseFloat(document.getElementById("lat").value);
+    let lon = parseFloat(document.getElementById("lon").value);
+    
+    console.log("Latitude:", lat, "Longitude:", lon); // Debugging
+
+    // Ensure that lon and lat are valid numbers
+    if (isNaN(lon) || isNaN(lat) || lon < -180 || lon > 180 || lat < -90 || lat > 90) {
+        alert("Please enter valid longitude (-180 to 180) and latitude (-90 to 90) values.");
+        return;
+    }
+
+    // Center the map view to the specified coordinates
+    map.getView().setCenter([lon, lat]);
+    map.getView().setZoom(10); // Set desired zoom level
+
+    // Drop a pin at the specified coordinates
+    let pinFeature = new ol.Feature({
+        geometry: new ol.geom.Point([lon, lat])
+    });
+
+    // Add the pin feature to the pin source
+    pinSource.addFeature(pinFeature);
+
+    let pinStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+            anchor: [0.5, 1],
+            src: './image/pinn.png' // URL to the pin icon
+        })
+    });
+
+    pinFeature.setStyle(pinStyle);
+});
+
+document.getElementById('locate_Pinremove').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent default form submission
+    
+    pinSource.clear(); // Clear all features from the pin source
 });

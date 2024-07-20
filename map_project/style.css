@@ -67,7 +67,7 @@ body {
     height: 100%;
     visibility: hidden;
     overflow: scroll;
-    background-color: #C6EFEB;
+    background-color: #a1e2c4;
 }
 
 /*
@@ -164,36 +164,42 @@ body {
     position: relative;
     width: 85%;
     left:5px;
+    background-color: #0c8eda;
 }
 
 #attributes {
     position: relative;
     width: 85%;
     left:5px;
+    background-color: #0c8eda;
 }
 
 #operator {
     position: relative;
     width: 85%;
     left:5px;
+    background-color: #0c8eda;
 }
 
 #value {
     position: relative;
     width: 85%;
     left:5px;
+    background-color: #0c8eda;
 }
 
 #layer1 {
     position: relative;
     width: 85%;
     left:5px;
+    background-color: #0c8eda;
 }
 
 #draw_type {
     position: relative;
     width: 85%;
     left:5px;
+    background-color: #0c8eda;
 }
 
 
